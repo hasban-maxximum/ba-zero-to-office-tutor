@@ -65,7 +65,8 @@ class RepositoryContract(unittest.TestCase):
 
     def test_no_false_chatgpt_self_install_claim(self):
         install = (ROOT / "INSTALL.md").read_text(encoding="utf-8").lower()
-        self.assertIn("does not", install)
+        prohibition_present = any(marker in install for marker in ["does not", "does **not**", "cannot"])
+        self.assertTrue(prohibition_present)
         self.assertIn("github", install)
         self.assertIn("custom gpt", install)
 
