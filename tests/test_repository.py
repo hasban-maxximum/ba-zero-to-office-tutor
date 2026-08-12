@@ -11,6 +11,8 @@ class RepositoryContract(unittest.TestCase):
         self.assertTrue(text.startswith("---\n"))
         self.assertRegex(text, r"(?m)^name: ba-zero-to-office-tutor$")
         self.assertRegex(text, r"(?m)^description: Use when .+")
+        desc = next(line.split(":", 1)[1].strip() for line in text.splitlines() if line.startswith("description:"))
+        self.assertLessEqual(len(desc), 200)
 
     def test_skill_contains_behavioral_contract(self):
         text = SKILL.read_text(encoding="utf-8").lower()
@@ -63,16 +65,22 @@ class RepositoryContract(unittest.TestCase):
             self.assertTrue((ROOT / rel).exists(), rel)
         self.assertEqual(len(list(REF.glob("*.md"))), 7)
 
-    def test_no_false_chatgpt_self_install_claim(self):
+    def test_install_supports_go_project_and_claude(self):
         install = (ROOT / "INSTALL.md").read_text(encoding="utf-8").lower()
         prohibition_present = any(marker in install for marker in ["does not", "does **not**", "cannot"])
         self.assertTrue(prohibition_present)
-        self.assertIn("github", install)
-        self.assertIn("custom gpt", install)
+        for phrase in ["chatgpt go", "project", "custom gpt", "claude", "custom skill"]:
+            self.assertIn(phrase, install)
+
+    def test_build_script_packages_claude_with_named_folder_root(self):
+        text = (ROOT / "scripts/build.py").read_text(encoding="utf-8")
+        self.assertIn('zip_tree(SKILL_DIR, out, "ba-zero-to-office-tutor")', text)
 
     def test_readme_has_ai_onboarding_marker(self):
         text = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("AI / LLM INSTALLATION INSTRUCTIONS", text)
+        self.assertIn("ChatGPT Go", text)
+        self.assertIn("Claude", text)
 
     def test_no_tbd_or_todo_in_public_docs(self):
         for path in list(ROOT.glob("*.md")) + list(REF.glob("*.md")) + list((ROOT / "chatgpt").glob("*.md")):
