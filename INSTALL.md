@@ -1,86 +1,100 @@
 # Installation Guide
 
-This repository is designed so a colleague can give its GitHub URL to an AI and receive the correct installation path without needing prompt-engineering knowledge.
-
-## Important limitation
-A GitHub URL does **not** let ChatGPT silently reconfigure a Custom GPT inside the user's account. The GPT owner still has to create/edit the GPT and add Instructions/Knowledge in the UI. The AI should guide those steps accurately rather than pretending installation happened automatically.
+This repository supports **ChatGPT Projects**, **ChatGPT Custom GPTs**, and **Claude Custom Skills**. A GitHub URL by itself does not modify an AI account; follow the platform-specific path below.
 
 ---
 
-# ChatGPT Custom GPT
+# ChatGPT Go: recommended path = Project
 
-## Behavior file
-Paste the complete contents of:
+ChatGPT Go includes Projects and access to custom GPTs subject to current feature availability. OpenAI also documents that **building/editing GPTs is available on the web experience only**; mobile apps can use GPTs but cannot build them.
 
-`chatgpt/GPT-INSTRUCTIONS.md`
+If your colleague cannot see **Create GPT**, do not block the installation. Use a **Project** instead.
 
-into the GPT **Instructions** field.
-
-## Knowledge files
-Upload these seven canonical files from:
-
-`skills/ba-zero-to-office-tutor/references/`
-
-- `curriculum.md`
-- `teaching-protocol.md`
-- `cognitive-load.md`
-- `assessment-rubric.md`
-- `learner-state.md`
-- `office-case-bank.md`
-- `technical-mental-maps.md`
-
-If you cloned the repository and ran `python3 scripts/build.py`, you may upload generated `chatgpt/KNOWLEDGE-BA-TUTOR.md` instead of the seven separate files.
-
-Optional: `chatgpt/BUILDER-PROMPT.md` can be used with the conversational GPT Builder.
-
-## Install
-1. Open ChatGPT web → **Explore GPTs** → **Create**.
+## Install as a Project
+1. Open ChatGPT and choose **New project** in the sidebar.
 2. Name it `BA Zero-to-Office Tutor`.
-3. Paste `chatgpt/GPT-INSTRUCTIONS.md` into **Instructions**.
-4. Upload the seven canonical reference files above into **Knowledge** (or the generated single-file bundle if you built it locally).
-5. Add conversation starters from `chatgpt/BUILDER-PROMPT.md` if desired.
-6. Test with: `Saya sudah hafal definisi BPMN. Berarti sudah paham kan?`
+3. Open the project menu → **Project settings**.
+4. Copy the contents of `chatgpt/GPT-INSTRUCTIONS.md` into **Project instructions**.
+5. Upload the seven files in `skills/ba-zero-to-office-tutor/references/` as project files:
+   - `curriculum.md`
+   - `teaching-protocol.md`
+   - `cognitive-load.md`
+   - `assessment-rubric.md`
+   - `learner-state.md`
+   - `office-case-bank.md`
+   - `technical-mental-maps.md`
+6. Start a chat **inside that project** and test: `Saya sudah hafal definisi BPMN. Berarti sudah paham kan?`
 
-Expected behavior: it should distinguish recall from mastery and ask for transfer/application evidence.
+OpenAI currently documents **25 files per project for Go and Plus**, so this 7-file setup fits comfortably. Project instructions apply only inside that project and override global custom instructions there.
 
-## If the colleague only has this GitHub URL
-Give ChatGPT this instruction:
+## If your colleague wants a Custom GPT instead
+Use ChatGPT on the **web**, not the Android/iOS app. Open **Explore GPTs → Create**. Paste `chatgpt/GPT-INSTRUCTIONS.md` into Instructions and upload the seven reference files as Knowledge.
+
+If **Create GPT** is still absent on web despite an active Go subscription, treat it as feature availability/account rollout rather than assuming Go is unsupported. The official Go page lists custom GPT access as subject to current feature availability. The Project installation above remains usable.
+
+Official OpenAI references:
+- https://help.openai.com/en/articles/11989085
+- https://help.openai.com/en/articles/8554397-creating-a-gpt
+- https://help.openai.com/en/articles/10169521-projects-in-chatgpt
+
+---
+
+# ChatGPT Plus / Pro / other eligible paid plans: Custom GPT
+
+1. Open ChatGPT **web**.
+2. Go to **Explore GPTs → Create**.
+3. Name it `BA Zero-to-Office Tutor`.
+4. Paste `chatgpt/GPT-INSTRUCTIONS.md` into **Instructions**.
+5. Upload the same seven canonical reference files into **Knowledge**.
+6. Test with the probes under **Verification** below.
+
+`chatgpt/BUILDER-PROMPT.md` is optional. `chatgpt/KNOWLEDGE-BA-TUTOR.md` can be generated with `python3 scripts/build.py`, but uploading the seven canonical files directly is simpler and avoids generated-file drift.
+
+---
+
+# Claude: native Custom Skill
+
+Claude Skills are available on **Free, Pro, Max, Team, and Enterprise**. Code execution/file creation must be enabled.
+
+## Fast install
+1. Clone/download this repository.
+2. Build the ZIP:
+   ```bash
+   python3 scripts/build.py
+   ```
+3. In Claude, enable **Settings → Capabilities → Code execution and file creation** if needed.
+4. Open **Customize → Skills**.
+5. Click **+ → Create skill → Upload a skill**.
+6. Upload `dist/ba-zero-to-office-tutor-claude.zip`.
+7. Enable the skill.
+8. Start a new chat and ask: `Lanjutkan target Technical BA saya dari nol.`
+
+## Required ZIP structure
+Anthropic requires the ZIP to contain the skill folder as its root:
 
 ```text
-Read this GitHub repository and help me install its BA tutor configuration into my ChatGPT account.
-Follow INSTALL.md exactly. Do not claim you can change my GPT configuration yourself.
-Tell me which file becomes Instructions, which seven files become Knowledge, then help me test the result.
+ba-zero-to-office-tutor-claude.zip
+└── ba-zero-to-office-tutor/
+    ├── SKILL.md
+    └── references/
+        ├── curriculum.md
+        └── ...
 ```
 
-Official OpenAI reference:
-https://help.openai.com/en/articles/8554397-creating-a-gpt
+The build script produces exactly this layout. The folder name matches the YAML `name`, and the repository uses uppercase `SKILL.md`, consistent with Anthropic's own public skills repository and template.
 
----
-
-# Claude chat / custom Skill
-
-The canonical Agent Skill is:
-
-`skills/ba-zero-to-office-tutor/`
-
-To create an uploadable ZIP without relying on a prebuilt binary, clone/download the repository and run:
-
-```bash
-python3 scripts/build.py
-```
-
-Then upload:
-
-`dist/ba-zero-to-office-tutor-claude.zip`
-
-Typical Claude path:
-**Customize → Skills → Create skill → Upload a skill**.
-
-If you do not run the build script, zip the **contents** of `skills/ba-zero-to-office-tutor/` so `SKILL.md` and `references/` remain together.
+## Claude troubleshooting
+If **Customize → Skills** is missing, enable Code execution/file creation first. If upload fails, check:
+- ZIP contains the named skill folder at its root;
+- folder name matches the YAML `name`;
+- `SKILL.md` exists inside that folder;
+- YAML frontmatter contains valid `name` and `description`;
+- description is concise and free of invalid characters.
 
 Official Anthropic references:
-https://support.claude.com/en/articles/12512180-use-skills-in-claude
-https://support.claude.com/en/articles/12512198-how-to-create-custom-skills
+- https://support.claude.com/en/articles/12512180-use-skills-in-claude
+- https://support.claude.com/en/articles/12512198-how-to-create-custom-skills
+- https://github.com/anthropics/skills
 
 ---
 
@@ -96,13 +110,13 @@ Keep `SKILL.md` and `references/` together.
 
 ---
 
-# Verification probes
+# Verification
 
 ### Memorization probe
 ```text
 Saya sudah hafal: API adalah Application Programming Interface. Berarti materi API selesai kan?
 ```
-Expected: no automatic mastery; tutor requests transfer/application.
+Expected: no automatic mastery; tutor asks for transfer/application evidence.
 
 ### Overload probe
 ```text

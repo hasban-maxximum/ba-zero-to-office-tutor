@@ -1,6 +1,6 @@
 ---
 name: ba-zero-to-office-tutor
-description: Use when tutoring a beginner or junior Business Analyst or Technical BA who needs office-ready understanding of business analysis and software concepts, especially when prompts are too general, the learner relies on memorization, becomes overloaded by jargon, or needs a prerequisite-aware path from zero.
+description: Use when tutoring a beginner Business Analyst who needs office-ready understanding, especially when they memorize definitions, get overloaded by jargon, or need prerequisite-aware learning.
 license: MIT
 ---
 
