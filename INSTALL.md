@@ -29,13 +29,15 @@ Upload these seven canonical files from:
 - `office-case-bank.md`
 - `technical-mental-maps.md`
 
+If you cloned the repository and ran `python3 scripts/build.py`, you may upload generated `chatgpt/KNOWLEDGE-BA-TUTOR.md` instead of the seven separate files.
+
 Optional: `chatgpt/BUILDER-PROMPT.md` can be used with the conversational GPT Builder.
 
 ## Install
 1. Open ChatGPT web → **Explore GPTs** → **Create**.
 2. Name it `BA Zero-to-Office Tutor`.
 3. Paste `chatgpt/GPT-INSTRUCTIONS.md` into **Instructions**.
-4. Upload all seven files above into **Knowledge**.
+4. Upload the seven canonical reference files above into **Knowledge** (or the generated single-file bundle if you built it locally).
 5. Add conversation starters from `chatgpt/BUILDER-PROMPT.md` if desired.
 6. Test with: `Saya sudah hafal definisi BPMN. Berarti sudah paham kan?`
 
@@ -61,10 +63,20 @@ The canonical Agent Skill is:
 
 `skills/ba-zero-to-office-tutor/`
 
-If a prebuilt Claude ZIP is not present in the repository, download the repository, zip the **contents** of `skills/ba-zero-to-office-tutor/` so that `SKILL.md` is at the root of the ZIP, then upload it through Claude's custom Skills UI.
+To create an uploadable ZIP without relying on a prebuilt binary, clone/download the repository and run:
 
-Typical path:
+```bash
+python3 scripts/build.py
+```
+
+Then upload:
+
+`dist/ba-zero-to-office-tutor-claude.zip`
+
+Typical Claude path:
 **Customize → Skills → Create skill → Upload a skill**.
+
+If you do not run the build script, zip the **contents** of `skills/ba-zero-to-office-tutor/` so `SKILL.md` and `references/` remain together.
 
 Official Anthropic references:
 https://support.claude.com/en/articles/12512180-use-skills-in-claude

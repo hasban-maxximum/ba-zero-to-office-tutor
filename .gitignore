@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.DS_Store
+chatgpt/KNOWLEDGE-BA-TUTOR.md
+dist/*.zip
+dist/SHA256SUMS.txt
