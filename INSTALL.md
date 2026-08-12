@@ -1,61 +1,70 @@
 # Installation Guide
 
-## Important: what a GitHub link can and cannot do
+This repository is designed so a colleague can give its GitHub URL to an AI and receive the correct installation path without needing prompt-engineering knowledge.
 
-An AI can read this public repository and explain the installation steps when web access is available. **ChatGPT cannot install or reconfigure a Custom GPT into the user's account merely because it received a GitHub URL.** The owner of the GPT must still create/edit the GPT and supply its Instructions/Knowledge through the ChatGPT UI.
-
-That distinction is deliberate: this repository is designed so a colleague can send the repo URL to an AI and the AI can immediately identify the correct platform-specific installation path without requiring the colleague to understand prompt engineering.
+## Important limitation
+A GitHub URL does **not** let ChatGPT silently reconfigure a Custom GPT inside the user's account. The GPT owner still has to create/edit the GPT and add Instructions/Knowledge in the UI. The AI should guide those steps accurately rather than pretending installation happened automatically.
 
 ---
 
-# ChatGPT (recommended for ChatGPT Plus/Pro and other plans that can create GPTs)
+# ChatGPT Custom GPT
 
-OpenAI documents Custom GPT behavior separately from Knowledge: behavior/workflow belongs in **Instructions**, while reference material belongs in uploaded **Knowledge** files.
+## Behavior file
+Paste the complete contents of:
 
-## Files to use
-- `chatgpt/GPT-INSTRUCTIONS.md` → paste into GPT **Instructions**.
-- `chatgpt/KNOWLEDGE-BA-TUTOR.md` → upload as **Knowledge**.
-- Optional: `chatgpt/BUILDER-PROMPT.md` → paste into the conversational GPT Builder to bootstrap the configuration.
+`chatgpt/GPT-INSTRUCTIONS.md`
+
+into the GPT **Instructions** field.
+
+## Knowledge files
+Upload these seven canonical files from:
+
+`skills/ba-zero-to-office-tutor/references/`
+
+- `curriculum.md`
+- `teaching-protocol.md`
+- `cognitive-load.md`
+- `assessment-rubric.md`
+- `learner-state.md`
+- `office-case-bank.md`
+- `technical-mental-maps.md`
+
+Optional: `chatgpt/BUILDER-PROMPT.md` can be used with the conversational GPT Builder.
 
 ## Install
-1. On ChatGPT web, open **Explore GPTs** and choose **Create**.
+1. Open ChatGPT web → **Explore GPTs** → **Create**.
 2. Name it `BA Zero-to-Office Tutor`.
-3. In **Configure**, paste the complete contents of `chatgpt/GPT-INSTRUCTIONS.md` into **Instructions**.
-4. Upload `chatgpt/KNOWLEDGE-BA-TUTOR.md` under **Knowledge**.
-5. Add the conversation starters from `chatgpt/BUILDER-PROMPT.md` if desired.
-6. Test with: `Saya sudah hafal definisi BPMN. Berarti sudah paham kan?` A correct setup should challenge transfer/application rather than immediately mark the topic mastered.
+3. Paste `chatgpt/GPT-INSTRUCTIONS.md` into **Instructions**.
+4. Upload all seven files above into **Knowledge**.
+5. Add conversation starters from `chatgpt/BUILDER-PROMPT.md` if desired.
+6. Test with: `Saya sudah hafal definisi BPMN. Berarti sudah paham kan?`
 
-## If your colleague only receives the GitHub URL
-They can paste this into ChatGPT:
+Expected behavior: it should distinguish recall from mastery and ask for transfer/application evidence.
+
+## If the colleague only has this GitHub URL
+Give ChatGPT this instruction:
 
 ```text
-Read this GitHub repository and help me install its BA tutor configuration into my ChatGPT account:
-<REPOSITORY_URL>
-
-Follow the repository's INSTALL.md exactly. Do not claim you can change my GPT configuration yourself. Tell me which files go into Instructions and Knowledge, then help me test the result.
+Read this GitHub repository and help me install its BA tutor configuration into my ChatGPT account.
+Follow INSTALL.md exactly. Do not claim you can change my GPT configuration yourself.
+Tell me which file becomes Instructions, which seven files become Knowledge, then help me test the result.
 ```
-
-Replace `<REPOSITORY_URL>` with the published repository URL.
 
 Official OpenAI reference:
 https://help.openai.com/en/articles/8554397-creating-a-gpt
 
 ---
 
-# Claude chat custom Skill
+# Claude chat / custom Skill
 
-Anthropic supports uploading a custom Skill as a ZIP. Code execution must be enabled for Skills.
+The canonical Agent Skill is:
 
-## File to use
-`dist/ba-zero-to-office-tutor-claude.zip`
+`skills/ba-zero-to-office-tutor/`
 
-## Install
-1. Open Claude.
-2. Go to **Customize → Skills**.
-3. Choose **+ → Create skill → Upload a skill**.
-4. Upload `dist/ba-zero-to-office-tutor-claude.zip`.
-5. Enable the skill.
-6. Start a new chat and ask: `Lanjutkan target Technical BA saya dari nol.`
+If a prebuilt Claude ZIP is not present in the repository, download the repository, zip the **contents** of `skills/ba-zero-to-office-tutor/` so that `SKILL.md` is at the root of the ZIP, then upload it through Claude's custom Skills UI.
+
+Typical path:
+**Customize → Skills → Create skill → Upload a skill**.
 
 Official Anthropic references:
 https://support.claude.com/en/articles/12512180-use-skills-in-claude
@@ -63,38 +72,34 @@ https://support.claude.com/en/articles/12512198-how-to-create-custom-skills
 
 ---
 
-# Claude Code / other Agent Skills-compatible harnesses
+# Claude Code / Agent Skills-compatible harnesses
 
-The canonical skill directory is:
+Copy/install the entire folder:
 
 ```text
 skills/ba-zero-to-office-tutor/
 ```
 
-For a harness that supports the Agent Skills convention, install/copy that entire folder into the skills directory recognized by the harness. Keep `SKILL.md` and `references/` together.
-
-If using a repository-based skills installer, point it at the published repository and select `skills/ba-zero-to-office-tutor` when the installer supports subdirectory installation.
+Keep `SKILL.md` and `references/` together.
 
 ---
 
-# Verify behavior after installation
+# Verification probes
 
-Use these three probes:
-
-### Probe 1 — memorization
+### Memorization probe
 ```text
 Saya sudah hafal: API adalah Application Programming Interface. Berarti materi API selesai kan?
 ```
-Expected: tutor refuses to equate a definition with mastery and gives a transfer task.
+Expected: no automatic mastery; tutor requests transfer/application.
 
-### Probe 2 — overload
+### Overload probe
 ```text
 Jelaskan REST, GraphQL, SOAP, JSON, XML, OAuth 2.0, JWT semuanya sekarang dari nol.
 ```
-Expected: tutor creates a category map and teaches one cluster first instead of dumping seven definitions.
+Expected: category map + one active cluster, not seven disconnected definitions.
 
-### Probe 3 — office urgency
+### Urgent-office probe
 ```text
 Saya belum belajar API tapi satu jam lagi harus review requirement integrasi payment. Bantu saya.
 ```
-Expected: tutor enters urgent mode and gives minimum bridge concepts plus a review checklist.
+Expected: URGENT mode, minimum conceptual bridge, review checklist, miniature example, then back to the real task.
