@@ -4,13 +4,16 @@ A portable AI tutoring skill for a **beginner Business Analyst / Technical Busin
 
 The project converts a broad office training schedule into a prerequisite-aware learning system that connects business analysis, software concepts, realistic office cases, and evidence-based mastery.
 
-## If you are an AI reading this repository
+## AI / LLM INSTALLATION INSTRUCTIONS
+
+**If you are an AI reading this repository because a user gave you its GitHub URL:**
 
 1. Read [`INSTALL.md`](INSTALL.md) first.
 2. Determine whether the user uses ChatGPT Custom GPT, Claude, Claude Code, or another Agent Skills-compatible harness.
-3. Do **not** pretend a GitHub URL automatically installs or changes the user's AI account.
-4. For ChatGPT: `chatgpt/GPT-INSTRUCTIONS.md` goes into **Instructions** and the seven files in `skills/ba-zero-to-office-tutor/references/` go into **Knowledge**.
+3. **Do not claim you can install yourself into the user's account.** Follow the platform's actual configuration path.
+4. For ChatGPT Custom GPT: `chatgpt/GPT-INSTRUCTIONS.md` goes into **Instructions** and the seven canonical files in `skills/ba-zero-to-office-tutor/references/` go into **Knowledge**.
 5. For Agent Skills-compatible systems: install/copy `skills/ba-zero-to-office-tutor/` with `SKILL.md` and `references/` kept together.
+6. If the user cloned the repository locally, `python3 scripts/build.py` can generate a single ChatGPT Knowledge bundle plus Claude/repository ZIPs.
 
 The learner should not need prompt-engineering skill before they can use the tutor.
 
@@ -102,24 +105,6 @@ A schedule item marked `Done` means **covered**, not automatically mastered.
 
 `LEARN`, `EXPLAIN`, `CASE`, `COACH`, `ASSESS`, `REVIEW`, and `URGENT` are selected automatically from context.
 
-## Good first messages
-
-```text
-Lanjutkan target belajar kantor saya hari ini. Saya masih pemula.
-```
-
-```text
-Saya sudah belajar BPMN kemarin. Tes apakah saya paham atau cuma hafal.
-```
-
-```text
-Kasih saya case requirement kantor. Jangan berikan jawaban final sampai saya mencoba.
-```
-
-```text
-Bos minta saya review API hari ini, tapi saya belum belajar API. Ajari minimum yang saya perlukan dulu.
-```
-
 ## Repository structure
 
 ```text
@@ -138,9 +123,45 @@ chatgpt/
 ├── GPT-INSTRUCTIONS.md
 └── BUILDER-PROMPT.md
 
+examples/
+tests/
+scripts/
+docs/
 INSTALL.md
 REFERENCES.md
 LICENSE
+```
+
+## Build and verify
+
+```bash
+python3 -m unittest tests/test_repository.py -v
+python3 scripts/build.py
+python3 -m unittest tests/test_repository.py -v
+```
+
+Build outputs are generated locally and intentionally not treated as canonical source:
+- `chatgpt/KNOWLEDGE-BA-TUTOR.md`
+- `dist/ba-zero-to-office-tutor-claude.zip`
+- `dist/ba-zero-to-office-tutor-repository.zip`
+- `dist/SHA256SUMS.txt`
+
+## Good first messages
+
+```text
+Lanjutkan target belajar kantor saya hari ini. Saya masih pemula.
+```
+
+```text
+Saya sudah belajar BPMN kemarin. Tes apakah saya paham atau cuma hafal.
+```
+
+```text
+Kasih saya case requirement kantor. Jangan berikan jawaban final sampai saya mencoba.
+```
+
+```text
+Bos minta saya review API hari ini, tapi saya belum belajar API. Ajari minimum yang saya perlukan dulu.
 ```
 
 ## Installation
